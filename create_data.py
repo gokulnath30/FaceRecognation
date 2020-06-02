@@ -12,12 +12,13 @@ if not os.path.isdir(path):
     os.mkdir(path) 
     
 (width, height) = (130,150)    
-face_cascade = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml') 
-webcam = cv2.VideoCapture(0)    
+face_cascade = cv2.CascadeClassifier('data/haarcascades/haarcascade_frontalface_default.xml') 
+# webcam1 = cv2.VideoCapture(0)    
 count = 1 
 
 while True:
-   # webcam = cv2.VideoCapture("rtsp://admin:P@ssw0rd@192.168.168.150:554")   
+    # webcam = webcam1
+    webcam = cv2.VideoCapture("rtsp://admin:P@ssw0rd@192.168.168.150:554")   
     (ret, frame) = webcam.read() 
     frame_size=cv2.resize(frame, (1000, 600)) 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) 

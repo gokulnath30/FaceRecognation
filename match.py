@@ -1,10 +1,11 @@
 import face_recognition,os,mysql.connector,time
 from datetime import datetime,date
 from time import strptime
+
 import numpy as np
 
 # Getting save images list
-user_dir = "Users"
+user_dir = "Users/web"
 get_path = os.listdir(user_dir)
 
 #Getting capturing path 
@@ -31,7 +32,7 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 # getting last face match of the database
-mycursor.execute("SELECT Image_id FROM `attendance` WHERE In_time="+today+" ORDER BY Image_id DESC LIMIT 1") 
+mycursor.execute("SELECT Image_id FROM `attendance` WHERE In_date="+today+" ORDER BY Image_id DESC LIMIT 1") 
 myresult = mycursor.fetchall()
 
 ending_point = 0
@@ -41,7 +42,7 @@ for row in myresult:
 #Getting saved face images 
 for x in get_path:
     known_face_names.append(x)
-    userObj[x] = face_recognition.face_encodings(face_recognition.load_image_file("Users/"+x))[0]
+    userObj[x] = face_recognition.face_encodings(face_recognition.load_image_file("Users/web/"+x))[0]
     known_face_encodings.append(userObj[x])
 count=1;
 
@@ -77,14 +78,14 @@ for cap_img in cap_path:
             # time converting - this :
             current_time=get_time[3]
             month=str(strptime(get_time[1],'%b').tm_mon)
-            # print(get_time)
+            
             # removing file extantion
-            dateTime=get_time[3]+'-'+month+'-'+get_time[5]+'  '+get_time[4]
-            print(user_name,ImageData[0],dateTime)
+            current_date=get_time[2]+'-'+month+'-'+get_time[4]
+            print(user_name,ImageData[0],current_time,current_date)
             
             # Insert into database
-            sql = "INSERT INTO attendance (Image_id,Emp_name, In_time) VALUES (%s, %s,%s)"
-            val = (ImageData[0],user_name,dateTime)
+            sql = "INSERT INTO attendance (Image_id,Emp_name, In_time,In_date) VALUES (%s, %s,%s,%s)"
+            val = (ImageData[0],user_name,current_time,current_date)
             mycursor.execute(sql, val)
             mydb.commit()
     
